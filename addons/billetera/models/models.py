@@ -84,7 +84,6 @@ class WalletTransaction(models.Model):
 
     @api.model
     def create(self, vals):
-        # Ejemplo de secuencia simple 
         if vals.get('name', '/') == '/':
             vals['name'] = self.env['ir.sequence'].next_by_code('wallet.transaction') or 'TX-001'
         return super(WalletTransaction, self).create(vals)
