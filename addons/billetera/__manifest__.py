@@ -25,6 +25,7 @@ Long description of module's purpose
         'security/ir.model.access.csv',
         'views/wizard.xml',
         'views/views.xml',
+        'data/ir_sequence_data.xml',
     ],
 }
 

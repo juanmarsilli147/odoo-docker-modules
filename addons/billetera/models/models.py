@@ -2,10 +2,12 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 class WalletAccount(models.Model):
+    # Caracteristicas del modelo
     _name = 'wallet.account'
     _description = 'Billetera Virtual'
-    _rec_name = 'partner_id' # Para que en los campos Many2one se vea el nombre del contacto
+    _rec_name = 'partner_id'
 
+    # Campos del modelo
     partner_id = fields.Many2one(
         'res.partner', 
         string='Titular', 
@@ -25,8 +27,7 @@ class WalletAccount(models.Model):
     )
     state = fields.Selection([
         ('draft', 'Borrador'),
-        ('active', 'Activo'),
-        ('blocked', 'Bloqueado')
+        ('active', 'Activo')
     ], string='Estado', default='draft')
 
     transaction_ids = fields.One2many(
@@ -47,7 +48,7 @@ class WalletAccount(models.Model):
             for tx in record.transaction_ids.filtered(lambda x: x.state == 'confirmed'):
                 if tx.type == 'deposit':
                     total += tx.amount
-                elif tx.type in ['transfer', 'withdraw']:
+                elif tx.type == 'transfer':
                     total -= tx.amount
             record.balance = total
 
@@ -56,18 +57,20 @@ class WalletAccount(models.Model):
 
 
 class WalletTransaction(models.Model):
+    # Caracteristicas del modelo
     _name = 'wallet.transaction'
     _description = 'Transacción de Billetera'
     _order = 'date desc'
+    
 
+    # Campos del modelo
     name = fields.Char(string='Referencia', readonly=True, default='/')
     wallet_id = fields.Many2one('wallet.account', string='Billetera', required=True)
     date = fields.Datetime(string='Fecha', default=fields.Datetime.now)
     
     type = fields.Selection([
         ('deposit', 'Depósito'),
-        ('transfer', 'Transferencia'),
-        ('withdraw', 'Retiro')
+        ('transfer', 'Transferencia')
     ], string='Tipo', required=True)
     
     amount = fields.Monetary(string='Monto', required=True, currency_field='currency_id')
@@ -90,8 +93,8 @@ class WalletTransaction(models.Model):
 
     def action_confirm(self):
         for rec in self:
-            # Validación: No gastar lo que no se tiene
-            if rec.type in ['transfer', 'withdraw'] and rec.wallet_id.balance < rec.amount:
+            # Validación No gastar lo que no se tiene
+            if rec.type == 'transfer' and rec.wallet_id.balance < rec.amount:
                 raise ValidationError(_("Saldo insuficiente para realizar esta operación."))
             
             # Lógica de transferencia espejo
@@ -151,21 +154,13 @@ class WalletTransferWizard(models.TransientModel):
         if self.from_wallet_id == self.to_wallet_id:
             raise ValidationError("No puedes transferirte a ti mismo.")
 
-        # 1. Crear el egreso en la cuenta origen
-        self.env['wallet.transaction'].create({
+        # Crear el egreso en la cuenta origen hacia la cuenta destino
+        tx = self.env['wallet.transaction'].create({
             'wallet_id': self.from_wallet_id.id,
+            'to_wallet_id': self.to_wallet_id.id,
             'type': 'transfer',
             'amount': self.amount,
-            'state': 'confirmed',
-            'name': f"Transferencia a {self.to_wallet_id.partner_id.name}"
+            'state': 'draft',
         })
-
-        # 2. Crear el ingreso en la cuenta destino
-        self.env['wallet.transaction'].create({
-            'wallet_id': self.to_wallet_id.id,
-            'type': 'deposit',
-            'amount': self.amount,
-            'state': 'confirmed',
-            'name': f"Recibido de {self.from_wallet_id.partner_id.name}"
-        })
+        tx.action_confirm()
         return {'type': 'ir.actions.act_window_close'}
