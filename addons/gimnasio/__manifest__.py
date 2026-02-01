@@ -2,13 +2,13 @@
 {
     'name': "Gimnasio",
 
-    'summary': "Short (1 phrase/line) summary of the module's purpose",
+    'summary': "Modulo de Gestion de Membresia de Gimnasio",
 
     'description': """
-Long description of module's purpose
+        Modulo de Gestion de Membresia de Gimnasio
     """,
 
-    'author': "My Company",
+    'author': "Juan Marsilli",
     'website': "https://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
