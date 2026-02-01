@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="estate_property_menu_root" 
+              name="Bienes Raíces" />
+
+    <menuitem id="estate_property_menu_main" 
+              name="Anuncios" 
+              parent="estate_property_menu_root"/>
+
+    <menuitem id="estate_property_menu_action" 
+              name="Ver Anuncios" 
+              parent="estate_property_menu_main" 
+              action="estate_property_action"/>
+</odoo>
