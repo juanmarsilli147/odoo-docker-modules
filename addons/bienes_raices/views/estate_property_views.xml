@@ -10,5 +10,58 @@
             </p>
         </field>
     </record>
+
+
+    <record id="estate_property_view_list" model="ir.ui.view">
+        <field name="name">estate.property.view.list</field>
+        <field name="model">estate.property</field>
+        <field name="arch" type="xml">
+            <list string="Propiedades">
+                <field name="name" string="Title"/>
+                <field name="post_code"/>
+                <field name="bedrooms"/>
+                <field name="living_area"/>
+                <field name="expected_price"/>
+                <field name="selling_price"/>
+                <field name="date_availability" string="Availability"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="estate_property_view_form" model="ir.ui.view">
+        <field name="name">estate.property.view.form</field>
+        <field name="model">estate.property</field>
+        <field name="arch" type="xml">
+            <form string="Propiedad">
+                <sheet>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <h1 class="mb32">
+                            <field name="name" placeholder="New Estate Property" class="mb16"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_availability" string="Availability"/>
+                        </group>
+                        <group>
+                            <field name="expected_price"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="description" string="Description">
+                            <group>
+                                <group>
+                                    <field name="description" widget="html"/>
+                                    <field name="bedrooms"/>
+                                    <field name="garage"/>
+                                </group>
+                            </group>
+                         </page>
+                     </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
     
 </odoo>
