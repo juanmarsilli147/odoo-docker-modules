@@ -1,5 +1,6 @@
 from odoo import api, models, fields
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools.float_utils import float_compare
 
 
 class EstateProperty(models.Model):
@@ -40,6 +41,12 @@ class EstateProperty(models.Model):
     offer_ids = fields.One2many(comodel_name='estate.property.offer', inverse_name='property_id', string="Offers")
     best_offer = fields.Float(string="Best Offer", compute='_compute_best_offer')
 
+    _sql_constraints = [
+        ('name_uniq', 'unique(name)', 'El nombre de la propiedad debe ser único'),
+        ('check_expected_price', 'check(expected_price > 0)', 'El precio debe ser mayor a 0'),
+        ('check_selling_price', 'check(selling_price >= 0)', 'El precio de venta debe ser mayor a 0'),
+    ]
+
     @api.depends("living_area", "garden_area")
     def _compute_total_area(self):
         for property in self:
@@ -67,6 +74,15 @@ class EstateProperty(models.Model):
             raise UserError("La propiedad vendida no puede ser cancelada")
         self.filtered(lambda p: p.state != 'canceled').write({'state': 'canceled'})
         return True
+
+    @api.constrains('expected_price', 'selling_price')
+    def _check_selling_price(self):
+        for property in self:
+            if float_compare(property.selling_price, property.expected_price * 0.90, precision_digits=2) == -1:
+                raise ValidationError("El precio de venta debe ser mayor al 90% del precio esperado")
+
+
+    
 
     
     

@@ -16,6 +16,10 @@ class EstatePropertyOffer(models.Model):
     property_id = fields.Many2one(comodel_name='estate.property', string="Property")
     partner_id = fields.Many2one(comodel_name='res.partner', string="Partner")
 
+    _sql_constraints = [
+        ('check_price', 'check(price > 0)', 'El precio de la oferta debe ser mayor a 0'),
+    ]
+
     @api.depends("validity")
     def _compute_deadline_date(self):
         for offer in self:
