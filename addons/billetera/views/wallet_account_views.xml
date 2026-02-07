@@ -76,9 +76,5 @@
                 </p>
             </field>
         </record>
-
-        <menuitem id="menu_wallet_root" name="Billeteras Virtuales" sequence="10"/>
-        <menuitem id="menu_wallet_main" name="Mis Billeteras" 
-                  parent="menu_wallet_root" action="action_wallet_account" sequence="10"/>
     </data>
 </odoo>

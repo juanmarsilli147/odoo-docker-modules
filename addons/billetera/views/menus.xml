@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem id="menu_wallet_root" name="Billeteras Virtuales" sequence="10"/>
+
+        <menuitem id="menu_wallet_main" name="Mis Billeteras" 
+                  parent="menu_wallet_root" action="action_wallet_account" sequence="10"/>
+    </data>
+</odoo>
