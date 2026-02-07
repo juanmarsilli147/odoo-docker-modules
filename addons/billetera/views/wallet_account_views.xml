@@ -23,7 +23,7 @@
                         <button name="action_activate" string="Activar Cuenta" type="object" 
                                 class="oe_highlight" invisible="state != 'draft'"/>
                         
-                        <button name="%(action_wallet_deposit_wizard)d" string="Depósito Inicial" 
+                        <button name="%(action_wallet_deposit_wizard)d" string="Ingreso" 
                                 type="action" invisible="state != 'active'" context="{'default_wallet_id': id}"/>
 
                         <button name="%(action_wallet_transfer_wizard)d" 
