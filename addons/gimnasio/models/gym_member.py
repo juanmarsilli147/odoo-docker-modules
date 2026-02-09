@@ -1,6 +1,7 @@
-from odoo import models, fields, api, _
+from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 from datetime import timedelta
+
 
 class GymMember(models.Model):
     _name = 'gym.member'
@@ -63,14 +64,3 @@ class GymMember(models.Model):
         self.ensure_one()
         current_end = self.end_date if self.end_date and self.end_date > fields.Date.today() else fields.Date.today()
         self.end_date = current_end + timedelta(days=self.plan_id.duration_days)
-
-class GymPlan(models.Model):
-    _name = 'gym.plan'
-    _description = 'Plan de Gimnasio'
-    
-    name = fields.Char(string='Nombre del Plan', required=True)
-    duration_days = fields.Integer(string='Duración en días', required=True, default=30)
-    
-    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
-    price = fields.Monetary(string='Precio', currency_field='currency_id', required=True)
-    

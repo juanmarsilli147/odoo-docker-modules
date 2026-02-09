@@ -1,0 +1,8 @@
+<odoo>
+    <menuitem name="Gimnasio" id="gym_menu_root"/>
+    <menuitem name="Operaciones" id="gym_menu_operations" parent="gym_menu_root" sequence="10"/>
+    <menuitem name="Socios" id="gym_menu_member_list" 
+              parent="gym_menu_operations" 
+              action="gym_member_action_window" 
+              sequence="10"/>
+</odoo>
