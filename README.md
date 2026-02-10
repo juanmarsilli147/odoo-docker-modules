@@ -1,43 +1,35 @@
-# Odoo Custom Addons (v18)
+# Odoo Modulos Custom
+## Resumen de Módulos
 
-Este repositorio contiene 3 módulos personalizados para Odoo, desarrollados con un enfoque en la extensibilidad del estándar y la integridad de los datos de negocio. Los módulos fueron probados en la version **Community** del sistema.
+### 1. 🚛 Logistics (Gestión de Envíos)
 
-## Tecnologías y Conceptos Aplicados
+Módulo integral para el control de la cadena de suministro y despacho de mercancías.
 
-* **ORM de Odoo:** Uso de `@api.depends`, `@api.constrains`, y `@api.model`.
-* **Herencia (Inheritance):** Extensión del modelo base `res.partner` mediante herencia de clase y de vista (XPath).
-* **UX/UI:** Implementación de **Wizards** (`TransientModel`) para flujos de trabajo dinámicos y widgets modernos como `boolean_toggle`.
-* **Seguridad:** Lógica de validaciones (`ValidationError`) para evitar estados de cuenta inconsistentes y duplicidad de registros.
+* **Integración con Ventas:** Generación automática de órdenes de envío al confirmar una *Sale Order*.
+* **Logística Avanzada:** Asignacion de Flota y asignación de choferes.
+* **Tracking Externo:** Portal público para que los clientes finales puedan seguir el estado de su envío en tiempo real sin necesidad de login.
+* **Informes Técnicos:** Generación de remitos en PDF.
 
----
+### 2. 💳 Billetera Virtual
 
-## Módulos Incluidos
+Sistema de gestión monetaria interna entre contactos del sistema.
 
-### 1. Gestión de Billetera Virtual
+* **Cuentas Virtuales:** Creación de saldos por contacto (`res.partner`).
+* **Transacciones:** Flujo de depósitos y transferencias internas seguras entre usuarios.
+* **Integración de Pagos:** Permite utilizar el saldo de la billetera virtual como método de pago para facturas y órdenes de venta.
 
-Módulo para la gestión de saldos y transacciones financieras internas vinculadas a contactos.
+### 3. 🏋️ Membresia de Gimnasio (Gestión de Socios)
 
-* **Modelo Core:** `wallet.account` vinculado a `res.partner`.
-* **Lógica de Transacciones:** Sistema de depósitos y transferencias con validación de saldo en tiempo real mediante campos computados almacenados (`store=True`).
-* **Seguridad Financiera:** * Restricción mediante `_sql_constraints` para asegurar una única billetera por contacto.
-* Validación dinámica para impedir transferencias si el saldo disponible es insuficiente.
-* **Automatización:** Al realizar una transferencia, el sistema genera automáticamente el asiento de "ingreso" espejo en la cuenta del destinatario.
+Especializado en el control de membresías y acceso a centros deportivos.
 
-### 2. Gestión de Miembros de Gimnasio
+* **Vista 360 del Contacto:** Extensión del modelo `res.partner` mediante *Herencia* (Notebook pages) para visualizar el estado de socio, fechas de alta y vencimiento.
+* **Control de Membresías:** Registro y trazabilidad de los planes contratados por cada cliente.
 
-Sistema para el control de membresías, planes y estados de actividad de socios.
+### 4. 🏠 Real Estate Management (Gestión Inmobiliaria)
 
-* **Cálculo Automático de Fechas:** Uso de `timedelta` para determinar la fecha de vencimiento basada en la duración del plan seleccionado.
-* **Gestión de Planes:** Modelo paramétrico `gym.plan` que permite definir precios, monedas y duraciones personalizadas.
-* **Validaciones de Identidad:** * `@api.constrains` para asegurar que el DNI sea numérico y único en la base de datos.
-* Control de duplicados para evitar múltiples membresías activas para el mismo contacto.
-* **Acciones de UX:** Botón de "Renovación Rápida" que extiende la membresía actual manteniendo la continuidad del socio.
+Módulo ligero para la administración de propiedades y ofertas comerciales.
 
-### 3. Extensión de Contactos Estándar
+* **Gestión de Propiedades:** Registro detallado de características, ubicación y tipos de inmuebles.
+* **Ciclo de Ofertas:** Sistema de registro de ofertas de compra/alquiler enviadas por interesados, con estados de aceptación o rechazo.
 
-Módulo "puente" para demostrar entendimiento en la capacidad de heredar y expandir módulos base de Odoo sin alterar el código original.
-
-* **Herencia de Modelo:** Se extiende `res.partner` para integrar el estado de socio de forma nativa.
-* **Lógica Cross-Module:** Campo computado que analiza todas las membresías vinculadas para determinar si el socio está "Activo" en la vista principal de Contactos.
-* **Herencia de Vista (XML):** * Uso de `xpath` para inyectar una nueva pestaña ("Gimnasio") en el `notebook` de la ficha de contactos.
-* Implementación de atributos condicionales (`invisible`, `readonly`) para mejorar la interfaz del usuario.
+**Juan Ignacio Marsilli** - Analista de Sistemas / Desarrollador Python & Odoo.
