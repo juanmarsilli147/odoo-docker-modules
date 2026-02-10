@@ -9,13 +9,14 @@ class EstatePropertyOffer(models.Model):
 
     price = fields.Float(string="Precio", required=True)
     state = fields.Selection([
-        ('accepted', 'Accepted'),
-        ('rejected', 'Rejected'),
-    ], string="Status", copy=False)
-    validity = fields.Integer(string="Validity (days)", default=7)
-    deadline_date = fields.Date(string="Date Deadline", compute='_compute_deadline_date')
-    property_id = fields.Many2one(comodel_name='estate.property', string="Property")
+        ('accepted', 'Aceptada'),
+        ('rejected', 'Rechazada'),
+    ], string="Estado", copy=False)
+    validity = fields.Integer(string="Valididad (días)", default=7)
+    deadline_date = fields.Date(string="Fecha de Vencimiento", compute='_compute_deadline_date')
+    property_id = fields.Many2one(comodel_name='estate.property', string="Propiedad")
     partner_id = fields.Many2one(comodel_name='res.partner', string="Partner")
+    user_id = fields.Many2one(comodel_name='res.users', string="Usuario", default=lambda self: self.env.user)
 
     _sql_constraints = [
         ('check_price', 'check(price > 0)', 'El precio de la oferta debe ser mayor a 0'),
@@ -39,6 +40,7 @@ class EstatePropertyOffer(models.Model):
             offer.state = 'accepted'
             offer_property.selling_price = offer.price
             offer_property.buyer_id = offer.partner_id
+            offer_property.salesperson_id = offer.user_id
             offer_property.state = 'offer_accepted'
         return True
 

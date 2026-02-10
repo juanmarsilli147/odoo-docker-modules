@@ -1,6 +1,6 @@
 from odoo import api, models, fields
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools.float_utils import float_compare
+from odoo.tools.float_utils import float_compare, float_is_zero
 
 
 class EstateProperty(models.Model):
@@ -12,35 +12,35 @@ class EstateProperty(models.Model):
     description = fields.Text(string="Descripción")
     active = fields.Boolean(string="Active", default=True)
     state = fields.Selection([
-        ('new', 'New'),
-        ('offer_received', 'Offer Received'),
-        ('offer_accepted', 'Offer Accepted'),
-        ('sold', 'Sold'),
-        ('canceled', 'Canceled'),
-    ], string="State", default='new')
-    property_type_id = fields.Many2one(comodel_name='estate.property.type', string="Property Type")
-    tag_ids = fields.Many2many(comodel_name='estate.property.tag', string="Property Tags", widget="many2many_tags")
-    bedrooms = fields.Integer(string="Bed Rooms", default=2)
-    living_area = fields.Integer(string="Living Area")
+        ('new', 'Nuevo'),
+        ('offer_received', 'Oferta Recibida'),
+        ('offer_accepted', 'Oferta Aceptada'),
+        ('sold', 'Vendido'),
+        ('canceled', 'Cancelado'),
+    ], string="Estado", default='new')
+    property_type_id = fields.Many2one(comodel_name='estate.property.type', string="Tipo de Propiedad")
+    tag_ids = fields.Many2many(comodel_name='estate.property.tag', string="Tags")
+    bedrooms = fields.Integer(string="Habitaciones", default=2)
+    living_area = fields.Integer(string="Área de Living")
     facades = fields.Integer(string="Facades")
-    garden_area = fields.Integer(string="Garden Area")
-    post_code = fields.Char(string="Post Code")
+    garden_area = fields.Integer(string="Área de Jardín")
+    post_code = fields.Char(string="Código Postal")
     garden_orientation = fields.Selection([
-        ('north', 'North'),
-        ('south', 'South'),
-        ('east', 'East'),
-        ('west', 'West'),
-    ], string="Garden Orientation", default='north')
-    total_area = fields.Integer(string="Total Area", compute='_compute_total_area')
-    date_availability = fields.Date(string="Date Availability", default = lambda self: fields.Date.add(fields.Date.today(), months=3), copy=False)
+        ('north', 'Norte'),
+        ('south', 'Sur'),
+        ('east', 'Este'),
+        ('west', 'Oeste'),
+    ], string="Orientación del Jardín", default='north')
+    total_area = fields.Integer(string="Área Total", compute='_compute_total_area')
+    date_availability = fields.Date(string="Disponibilidad", default = lambda self: fields.Date.add(fields.Date.today(), months=3), copy=False)
     garage = fields.Boolean(string="Garage", default=False)
-    garden = fields.Boolean(string="Garden", default=False)
-    expected_price = fields.Float(string="Expected Price", required=True)
-    selling_price = fields.Float(string="Selling Price", readonly=True, copy=False)
-    buyer_id = fields.Many2one(comodel_name='res.partner', string="Buyer")
-    salesperson_id = fields.Many2one(comodel_name='res.users', string="Salesperson")
-    offer_ids = fields.One2many(comodel_name='estate.property.offer', inverse_name='property_id', string="Offers")
-    best_offer = fields.Float(string="Best Offer", compute='_compute_best_offer')
+    garden = fields.Boolean(string="Jardín", default=False)
+    expected_price = fields.Float(string="Precio Esperado", required=True)
+    selling_price = fields.Float(string="Precio de Venta", readonly=True, copy=False)
+    buyer_id = fields.Many2one(comodel_name='res.partner', string="Comprador")
+    salesperson_id = fields.Many2one(comodel_name='res.users', string="Vendedor")
+    offer_ids = fields.One2many(comodel_name='estate.property.offer', inverse_name='property_id', string="Ofertas")
+    best_offer = fields.Float(string="Mejor Oferta", compute='_compute_best_offer')
 
     _sql_constraints = [
         ('name_uniq', 'unique(name)', 'El nombre de la propiedad debe ser único'),
@@ -78,10 +78,15 @@ class EstateProperty(models.Model):
 
     @api.constrains('expected_price', 'selling_price')
     def _check_selling_price(self):
-        for property in self:
-            if float_compare(property.selling_price, property.expected_price * 0.90, precision_digits=2) == -1:
-                raise ValidationError("El precio de venta debe ser mayor al 90% del precio esperado")
-
+        for record in self:
+            if float_is_zero(record.selling_price, precision_digits=2):
+                continue
+            limit_price = record.expected_price * 0.90
+            if float_compare(record.selling_price, limit_price, precision_digits=2) == -1:
+                raise ValidationError(
+                    f"El precio de venta ({record.selling_price}) debe ser al menos el 90% "
+                    f"del precio esperado ({record.expected_price})."
+                )
 
     
 

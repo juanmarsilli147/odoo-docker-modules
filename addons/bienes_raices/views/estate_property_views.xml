@@ -46,7 +46,7 @@
                 <field name="living_area"/>
                 <field name="expected_price"/>
                 <field name="selling_price"/>
-                <field name="date_availability" string="Availability"/>
+                <field name="date_availability"/>
             </list>
         </field>
     </record>
@@ -70,23 +70,21 @@
                     </div>
                     <group>
                         <group>
-                            <field name="tag_ids" string="Property Tags"/>
-                            <field name="property_type_id" string="Property Type"/>
-                            <field name="post_code" string="Postal Code"/>
-                            <field name="date_availability" string="Availability"/>
+                            <field name="tag_ids" string="Tags" widget="many2many_tags"/>
+                            <field name="property_type_id"/>
+                            <field name="post_code"/>
+                            <field name="date_availability"/>
                         </group>
                         <group>
-                            <field name="expected_price" string="Expected Price"/>
-                            <field name="best_offer" string="Best Offer"/>
-                            <field name="selling_price" string="Selling Price"/>
-                            <field name="state" string="State"/>
+                            <field name="expected_price"/>
+                            <field name="best_offer"/>
+                            <field name="selling_price"/>
                         </group>
                     </group>
                     <notebook>
-                        <page name="description" string="Description">
+                        <page name="description" string="Descripción">
                             <group>
                                 <group>
-                                    <field name="state"/>
                                     <field name="description" widget="html"/>
                                     <field name="bedrooms"/>
                                     <field name="living_area"/>
@@ -101,7 +99,7 @@
                                 </group>
                             </group>
                          </page>
-                         <page name="offer" string="Offer Info">
+                         <page name="offer" string="Información de la Oferta Aceptada">
                             <group>
                                 <group>
                                     <field name="buyer_id"/>
@@ -109,7 +107,7 @@
                                 </group>
                             </group>
                          </page>
-                         <page name="offers" string="Offers">
+                         <page name="offers" string="Ofertas">
                             <field name="offer_ids">
                                 <list>
                                     <field name="partner_id"/>
