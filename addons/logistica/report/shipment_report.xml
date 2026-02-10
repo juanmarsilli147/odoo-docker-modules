@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_shipment" model="ir.actions.report">
+        <field name="name">Remito de Envío</field>
+        <field name="model">logistics.shipment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">logistica.report_shipment_template</field>
+        <field name="report_file">logistica.report_shipment_template</field>
+        <field name="print_report_name">'Remito - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_logistics_shipment"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_shipment_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="row">
+                            <div class="col-8">
+                                <h2>Remito # <span t-field="o.name"/></h2>
+                            </div>
+                            <div class="col-4 text-end">
+                                <img t-if="o.name" 
+                                     t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('QR', o.name, 200, 200)" 
+                                     style="width:100px;height:100px;"/>
+                            </div>
+                        </div>
+
+                        <hr/>
+
+                        <div class="row mt-4 mb-4">
+                            <div class="col-6">
+                                <strong>Cliente:</strong>
+                                <div t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Detalles del Envío:</strong><br/>
+                                Fecha: <span t-field="o.create_date" t-options='{"widget": "date"}'/><br/>
+                                Vehículo: <span t-if="o.vehicle_id" t-field="o.vehicle_id.name"/><br/>
+                                Peso Estimado: <span t-field="o.total_weight"/> kg
+                            </div>
+                        </div>
+
+                        <table class="table table-sm o_main_table mt-4">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="text-end">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.sale_id.order_line" t-as="line">
+                                    <tr>
+                                        <td><span t-field="line.product_id.name"/></td>
+                                        <td class="text-end">
+                                            <span t-field="line.product_uom_qty"/>
+                                            <span t-field="line.product_uom" groups="uom.group_uom"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <div class="mt-5">
+                            <p><strong>Notas:</strong> Favor de verificar la mercadería al recibir.</p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

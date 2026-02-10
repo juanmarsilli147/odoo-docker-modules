@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_logistics_shipment_list" model="ir.ui.view">
+        <field name="name">logistics.shipment.list</field>
+        <field name="model">logistics.shipment</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'" decoration-success="state == 'delivered'">
+                <field name="name"/>
+                <field name="sale_id"/>
+                <field name="partner_id"/>
+                <field name="driver_id" widget="many2one_avatar_user"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state == 'in_transit'" 
+                       decoration-success="state == 'delivered'"
+                       decoration-warning="state == 'ready'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_logistics_shipment_form" model="ir.ui.view">
+        <field name="name">logistics.shipment.form</field>
+        <field name="model">logistics.shipment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Confirmar" type="object" 
+                            invisible="state != 'draft'" class="oe_highlight"/>
+                    
+                    <button name="action_in_transit" string="Iniciar Tránsito" type="object" 
+                            invisible="state != 'ready'" class="oe_highlight"/>
+                    
+                    <button name="action_delivered" string="Entregado" type="object" 
+                            invisible="state != 'in_transit'" class="oe_highlight"/>
+                    
+                    <button name="action_cancel" string="Cancelar" type="object" 
+                            invisible="state not in ['draft', 'ready']"/>
+                    
+                    <field name="state" widget="statusbar" statusbar_visible="draft,ready,in_transit,delivered"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sale_id"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="driver_id"/>
+                            <field name="vehicle_id"/>
+                            <field name="total_weight"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_logistics_shipment" model="ir.actions.act_window">
+        <field name="name">Envíos</field>
+        <field name="res_model">logistics.shipment</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_logistics_shipment_list"/> 
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer envío
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_logistics_root" name="Logística" sequence="10"/>
+    <menuitem id="menu_logistics_shipment" name="Envíos" parent="menu_logistics_root" action="action_logistics_shipment" sequence="10"/>
+</odoo>

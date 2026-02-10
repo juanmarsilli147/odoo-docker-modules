@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="tracking_not_found" name="Envío no encontrado">
+        <t t-call="website.layout">
+            <div id="wrap" class="container mt32 text-center">
+                <h1 class="text-danger">Lo sentimos</h1>
+                <p>No pudimos encontrar ningún envío con esa referencia.</p>
+                <a href="/" class="btn btn-primary">Volver al inicio</a>
+            </div>
+        </t>
+    </template>
+
+    <template id="tracking_page_template" name="Seguimiento de Envío">
+        <t t-call="website.layout">
+            <div id="wrap" class="container mt32">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <div class="card shadow">
+                            <div class="card-header bg-primary text-white text-center">
+                                <h3>Seguimiento de Envío: <t t-esc="shipment.name"/></h3>
+                            </div>
+                            <div class="card-body">
+                                <h5>Estado Actual: 
+                                    <span t-attf-class="badge badge-pill #{'badge-info' if shipment.state == 'in_transit' else 'badge-success' if shipment.state == 'delivered' else 'badge-warning'}">
+                                        <t t-esc="dict(shipment._fields['state'].selection).get(shipment.state)"/>
+                                    </span>
+                                </h5>
+
+                                <div class="progress mt32" style="height: 30px;">
+                                    <div t-attf-class="progress-bar progress-bar-striped progress-bar-animated #{'bg-warning' if shipment.state == 'ready' else 'bg-info' if shipment.state == 'in_transit' else 'bg-success' if shipment.state == 'delivered' else 'bg-secondary'}"
+                                         role="progressbar"
+                                         t-att-style="'width: %s' % ('25%' if shipment.state == 'ready' else '60%' if shipment.state == 'in_transit' else '100%' if shipment.state == 'delivered' else '10%')">
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt32 text-center">
+                                    <div class="col-4"><strong>Preparado</strong></div>
+                                    <div class="col-4"><strong>En Camino</strong></div>
+                                    <div class="col-4"><strong>Entregado</strong></div>
+                                </div>
+
+                                <hr class="mt32"/>
+                                <div class="mt32">
+                                    <p><strong>Cliente:</strong> <t t-esc="shipment.partner_id.name"/></p>
+                                    <p><strong>Peso del paquete:</strong> <t t-esc="shipment.total_weight"/> kg</p>
+                                    <p t-if="shipment.vehicle_id"><strong>Transporte:</strong> <t t-esc="shipment.vehicle_id.name"/></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
