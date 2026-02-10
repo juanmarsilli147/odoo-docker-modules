@@ -9,13 +9,13 @@
     """,
 
     'author': "Juan Marsilli",
-    'category': 'Uncategorized',
     'version': '0.1',
     'depends': ['base'],
     'data': [
         'security/ir.model.access.csv',
-        'views/menus.xml',
         'views/gym_member_views.xml',
+        'views/partner_gym_inherit_views.xml',
+        'views/menus.xml',
     ],
 
     'application': True,

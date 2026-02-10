@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from datetime import timedelta
 
@@ -15,7 +15,7 @@ class GymMember(models.Model):
         ondelete='restrict'
     )
 
-    dni = fields.Char(related='partner_id.vat', string='DNI', readonly=False)
+    dni = fields.Char(related='partner_id.vat', string='DNI', readonly=False, store=True)
     email = fields.Char(related='partner_id.email', readonly=True)
     
     plan_id = fields.Many2one('gym.plan', string='Plan', required=True)
